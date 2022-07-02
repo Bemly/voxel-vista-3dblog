@@ -1,46 +1,33 @@
-# Ryan Floyd's Portfolio
+## 所需字体库
 
-This was my quarantine project! I decided to revamp my portfolio into an interactive 3D world built using [Three.js](https://github.com/mrdoob/three.js) for graphics ( WebGL under the hood) and [Ammo.js](https://github.com/kripken/ammo.js), a port of the [Bullet physics engine](https://pybullet.org/wordpress/) to JavaScript. I had an absolute blast making this!
+小破站所需字体库QQ频道1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM暂时放几个经常用的链接在这其他图片还没找到罢了（使用左下角的操纵杆移动球。请以纵向方向使用您的设备！把砖块全部推下去有惊喜，前提是自己没掉下去
 
-Try it out! [https://www.ryan-floyd.com/](https://www.ryan-floyd.com/)
+## API
 
-I wrote an article explaining the site [here](https://dev.to/mrryanfloyd/create-an-interactive-3d-portfolio-website-that-stands-out-to-employers-47gc)
+createBox 带碰撞体积的盒子
+    x, y, z, //坐标
+    scaleX, scaleY, scaleZ, //大小
+    boxTexture, //材质
+    URLLink,  //超链接
+    color = 0x000000, //颜色
+    rotation = 0, //旋转
+    transparent = true, //透明
+    opacity = 0.5  //边框透明度
+    
+createBillboardRotated 带碰撞体积的告示牌
+    x, y, z,  //坐标
+    textureImage = billboardTextures.grassImage, //材质
+    urlLink,  //超链接
+    rotation = 0, //旋转
+    transparent = true, //透明度
+    opacity = 1, //边框透明度
+    color = 0x000000 //边框颜色
 
-![alt text](/ryan_floyd_portfolio_gif.gif)
-
-## Motivation
-
-While exploring [Google Experiments](https://experiments.withgoogle.com/) I discovered an amazing world of web rendering. There are so many incredible web projects out there, and I wanted to learn this technology. I was inspired by many awesome projects, but specifically examples from the [official examples/documentation](https://threejs.org/), [Lee Stemkoski](https://home.adelphi.edu/~stemkoski/) and [Three.js Fundamentals](https://threejsfundamentals.org/).
-
-## Features
-
-- Physics engine (Ammo.js) combined with 3D rendered objects (Three.js) for real-time movement, collision detection and interaction
-- Desktop and Mobile Responsiveness with both keyboard and touch screen controls
-- Raycasting with event listeners for user touch and click interaction
-- FPS tracker to monitor frame rate/ rendering performance
-- Asset compression with webpack plugin to help with quick site load times
-
-## Technology
-
-- Three.js (3D Graphics)
-- Ammo.js (Physics Engine)
-- JavaScript
-- Node.js
-- Express (Node.js framework)
-- Webpack (module/ dependency bundler)
-- HTML/CSS
-- Hosted on Heroku
-- Git (version control) / Github for code hosting
-
-## Usage
-
-To use locally, clone the repository, install dependencies, run using webpack's dev server, and navigate to localhost:8080 in your browser:
-
-```javascript
-npm i
-npm run dev
-```
-
-## License
-
-The project is licensed under the MIT License.
+allSkillsSection 躺平的图片君
+    x,
+  y,
+  z,
+  xScale,
+  zScale,
+  boxTexture,
+  URLLink = null

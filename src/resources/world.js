@@ -1,10 +1,11 @@
-// use Three.js to set up graphics
+// 创建3d世界物体
+
 import * as THREE from 'three';
 import Stats from 'stats.js';
 import galaxyVertexShader from '../jsm/vertex.glsl';
 import galaxyFragmentShader from '../jsm/fragment.glsl';
 
-//threejs variable declaration
+// 定义three.js 场景
 export let clock,
   scene,
   camera,
@@ -16,19 +17,17 @@ export let clock,
   lensFlareObject,
   galaxyClock;
 
-//generic temporary transform to begin
-
 export let manager = new THREE.LoadingManager();
 
 export function createWorld() {
   clock = new THREE.Clock();
   galaxyClock = new THREE.Clock();
 
-  // init new Three.js scene
+  // 初始化场景
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0x000000);
 
-  // camera
+  // 初始化相机
   camera = new THREE.PerspectiveCamera(
     45,
     window.innerWidth / window.innerHeight,
@@ -36,16 +35,15 @@ export function createWorld() {
     5000
   );
   camera.position.set(0, 30, 70);
-  //camera.lookAt(scene.position);
 
-  //Add hemisphere light
+  // 添加半球光
   let hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.1);
   hemiLight.color.setHSL(0.6, 0.6, 0.6);
   hemiLight.groundColor.setHSL(0.1, 1, 0.4);
   hemiLight.position.set(0, 50, 0);
   scene.add(hemiLight);
 
-  //Add directional light
+  // 添加直射光
   let dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
   dirLight.color.setHSL(0.1, 1, 0.95);
   dirLight.position.set(-10, 100, 50);
@@ -66,14 +64,13 @@ export function createWorld() {
 
   dirLight.shadow.camera.far = 15000;
 
-  //Setup the renderer
+  // 初始化渲染器
   renderer = new THREE.WebGLRenderer({ antialias: true });
-  //renderer.setClearColor(0xbfd1e5);
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
-  //renderer.shadowMap.type = THREE.BasicShadowMap;
   document.body.appendChild(renderer.domElement);
 
+  // 左上角状态监听器
   stats = new Stats();
   document.body.appendChild(stats.dom);
 
@@ -83,6 +80,7 @@ export function createWorld() {
   renderer.shadowMap.enabled = true;
 }
 
+// 地图中的旋转粒子堆
 export function glowingParticles() {
   var particleTextureLoader = new THREE.TextureLoader(manager);
   var particleTexture = particleTextureLoader.load('../src/jsm/spark.png');
@@ -116,15 +114,14 @@ export function glowingParticles() {
     sprite.material.blending = THREE.AdditiveBlending; // "glowing" particles
     sprite.renderOrder = 1;
     particleGroup.add(sprite);
-    // add variable qualities to arrays, if they need to be accessed later
     particleAttributes.startPosition.push(sprite.position.clone());
     particleAttributes.randomness.push(Math.random());
   }
 
   // scene.add(particleGroup);
-  // 注意改这里
 }
 
+// 镜头光晕
 export function createLensFlare(x, y, z, xScale, zScale, boxTexture) {
   const boxScale = { x: xScale, y: 0.1, z: zScale };
   let quat = { x: 0, y: 0, z: 0, w: 1 };
@@ -153,6 +150,7 @@ export function createLensFlare(x, y, z, xScale, zScale, boxTexture) {
   scene.add(lensFlareObject);
 }
 
+// 天空小光点
 export function addParticles() {
   var geometry = new THREE.Geometry();
 
@@ -167,9 +165,10 @@ export function addParticles() {
   var material = new THREE.PointsMaterial({ size: 3 });
   particleSystemObject = new THREE.Points(geometry, material);
 
-  scene.add(particleSystemObject);
+  // scene.add(particleSystemObject);
 }
 
+// min-max 中间值
 function getRandomArbitrary(min, max) {
   return Math.random() * (max - min) + min;
 }
@@ -177,9 +176,11 @@ function getRandomArbitrary(min, max) {
 export let galaxyMaterial = null;
 export let galaxyPoints = null;
 
+// 下方的银河
 export const generateGalaxy = () => {
   const parameters = {};
-  parameters.count = 50000;
+  // parameters.count = 50000;
+  parameters.count = 1;
   parameters.size = 0.005;
   parameters.radius = 100;
   parameters.branches = 3;
@@ -194,6 +195,7 @@ export const generateGalaxy = () => {
   galaxyMaterial = null;
   galaxyPoints = null;
   if (galaxyPoints !== null) {
+    // 从内存中销毁对象
     geometry.dispose();
     galaxyMaterial.dispose();
     scene.remove(galaxyPoints);
@@ -234,9 +236,9 @@ export const generateGalaxy = () => {
       radius;
     const randomZ =
       Math.pow(Math.random(), parameters.randomnessPower) *
-        (Math.random() < 0.5 ? 1 : -1) *
-        parameters.randomness *
-        radius -
+      (Math.random() < 0.5 ? 1 : -1) *
+      parameters.randomness *
+      radius -
       50;
 
     positions[i3] = Math.cos(branchAngle) * radius;
@@ -262,13 +264,14 @@ export const generateGalaxy = () => {
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
   geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
   geometry.setAttribute('aScale', new THREE.BufferAttribute(scales, 1));
+  // 扩散
   geometry.setAttribute(
     'aRandomness',
     new THREE.BufferAttribute(randomness, 3)
   );
 
   /**
-   * Material
+   * 自定义Material
    */
   galaxyMaterial = new THREE.ShaderMaterial({
     size: parameters.size,
@@ -303,14 +306,11 @@ export function moveParticles() {
     lensFlareObject.position.y = -50;
   }
 
-  //move stemkoski particles
   var time = 7 * clock.getElapsedTime();
 
   for (var c = 0; c < particleGroup.children.length; c++) {
     var sprite = particleGroup.children[c];
 
-    // pulse away/towards center
-    // individual rates of movement
     var a = particleAttributes.randomness[c] + 0.75;
     var pulseFactor = Math.sin(a * time) * 0.1 + 0.9;
     sprite.position.x = particleAttributes.startPosition[c].x * pulseFactor;
@@ -319,8 +319,5 @@ export function moveParticles() {
     sprite.position.z = particleAttributes.startPosition[c].z * pulseFactor;
   }
 
-  // rotate the entire group
-  //particleGroup.rotation.x = time * 0.5;
   particleGroup.rotation.y = time * 0.75;
-  // particleGroup.rotation.z = time * 1.0;
 }

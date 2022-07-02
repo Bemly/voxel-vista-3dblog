@@ -1,16 +1,17 @@
-const path = require('path');
-const CompressionPlugin = require('compression-webpack-plugin');
+const path = require('path')
+const CompressionPlugin = require('compression-webpack-plugin')
 
 module.exports = {
   entry: {
-    app: ['@babel/polyfill', './src/app.js'],
+    app: ['@babel/polyfill', './src/app.js']
   },
   output: {
-    path: path.resolve(__dirname, 'build'),
-    filename: 'app.bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'app.bundle.js'
   },
   module: {
     rules: [
+      // 处理js文件
       {
         test: /\.js?$/,
         exclude: /node_modules/,
@@ -19,24 +20,25 @@ module.exports = {
           presets: ['@babel/preset-env'],
         },
       },
-      // Shaders
+      // 处理着色器语言
       {
         test: /\.(glsl|vs|fs|vert|frag)$/,
         exclude: /node_modules/,
         use: ['raw-loader'],
-      },
-    ],
+      }
+    ]
   },
   plugins: [new CompressionPlugin()],
   devServer: {
     contentBase: path.join(__dirname, ''),
     compress: true,
     watchContentBase: true,
-    port: 8080,
-    host: '0.0.0.0', //your ip address
-    disableHostCheck: true, //coment these out for prod
+    port: 8082, // 端口
+    host: 'localhost', //IP
+    disableHostCheck: true,
   },
+  // 配置node
   node: {
-    fs: 'empty',
-  },
-};
+    fs: 'empty'
+  }
+}

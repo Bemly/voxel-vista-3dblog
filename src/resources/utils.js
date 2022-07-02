@@ -1,27 +1,27 @@
-//start link events
+// 工具函数
+
 import * as THREE from 'three';
 import { camera, renderer, scene } from './world';
 import { cursorHoverObjects } from '../app';
 
 export const pickPosition = { x: 0, y: 0 };
 
+// 相机经过贴图位置调整
 export function rotateCamera(ballPosition) {
-  // current camera position
   var camPos = new THREE.Vector3(
     camera.position.x,
     camera.position.y,
     camera.position.z
   );
 
-  // target camera position
   var targetPos;
 
-  //1
+  //1 俯视
   if (
-    (ballPosition.position.x < 77 &&
-      ballPosition.position.x > 42 &&
-      ballPosition.position.z > -20 &&
-      ballPosition.position.z < 40) ||
+    (ballPosition.position.x < 50 &&
+      ballPosition.position.x > -49 &&
+      /* ballPosition.position.z > -50 && */
+      ballPosition.position.z < -20) ||
     (ballPosition.position.x < -2 && ballPosition.position.z < -28) ||
     (ballPosition.position.x < -25 &&
       ballPosition.position.x > -70 &&
@@ -58,7 +58,6 @@ export function rotateCamera(ballPosition) {
     );
   }
 
-  // revert back to original angle
   else {
     targetPos = new THREE.Vector3(
       ballPosition.position.x,
@@ -70,6 +69,7 @@ export function rotateCamera(ballPosition) {
   camPos.lerp(targetPos, 0.033);
   camera.position.copy(camPos);
   camera.lookAt(ballPosition.position);
+  // console.log(ballPosition.position.x,ballPosition.position.y,ballPosition.position.z);
 }
 
 export function getCanvasRelativePosition(event) {
@@ -85,16 +85,16 @@ export function launchClickPosition(event) {
   pickPosition.x = (pos.x / renderer.domElement.width) * 2 - 1;
   pickPosition.y = (pos.y / renderer.domElement.height) * -2 + 1; // note we flip Y
 
-  // cast a ray through the frustum
   const myRaycaster = new THREE.Raycaster();
   myRaycaster.setFromCamera(pickPosition, camera);
-  // get the list of objects the ray intersected
+  // 探测射线相交
+  // https://threejs.org/docs/index.html?q=Raycaster#api/zh/core/Raycaster.intersectObjects
   const intersectedObjects = myRaycaster.intersectObjects(scene.children);
   if (intersectedObjects.length) {
     // pick the first object. It's the closest one
     const pickedObject = intersectedObjects[0].object;
-    if (intersectedObjects[0].object.userData.URL)
-      window.open(intersectedObjects[0].object.userData.URL);
+    if (pickedObject.userData.URL)
+      window.open(pickedObject.userData.URL);
     else {
       return;
     }
@@ -117,52 +117,3 @@ export function launchHover(event) {
     document.getElementById('document-body').style.cursor = 'default';
   }
 }
-
-//deprecated camera function
-/*
-function rotateCamera(ballPosition) {
-  //1
-  if (
-    (ballPosition.position.x < 77 &&
-      ballPosition.position.x > 42 &&
-      ballPosition.position.z > -20 &&
-      ballPosition.position.z < 40) ||
-    (ballPosition.position.x < -2 && ballPosition.position.z < -28) ||
-    (ballPosition.position.x < -25 &&
-      ballPosition.position.x > -70 &&
-      ballPosition.position.z > -10 &&
-      ballPosition.position.z < 40)
-  ) {
-    camera.position.x = ballPosition.position.x;
-    camera.position.y = ballPosition.position.y + 50;
-    camera.position.z = ballPosition.position.z + 40;
-    camera.lookAt(ballPosition.position);
-
-    //2
-  } else if (
-    ballPosition.position.x > -3 &&
-    ballPosition.position.x < 22 &&
-    ballPosition.position.z > 31 &&
-    ballPosition.position.z < 58
-  ) {
-    camera.position.x = ballPosition.position.x;
-    camera.position.y = ballPosition.position.y + 50;
-    camera.position.z = ballPosition.position.z + 40;
-    camera.lookAt(ballPosition.position);
-
-    //3
-  } else if (ballPosition.position.z > 50) {
-    camera.position.x = ballPosition.position.x;
-    camera.position.y = ballPosition.position.y + 10;
-    camera.position.z = ballPosition.position.z + 40;
-    camera.lookAt(ballPosition.position);
-
-    //no change
-  } else {
-    camera.position.x = ballPosition.position.x;
-    camera.position.y = ballPosition.position.y + 30;
-    camera.position.z = ballPosition.position.z + 60;
-    camera.lookAt(ballPosition.position);
-  }
-}
-*/

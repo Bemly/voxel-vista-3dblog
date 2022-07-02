@@ -1,4 +1,4 @@
-// create keyboard control event listeners
+// 创建键盘控制事件
 
 export let moveDirection = { left: 0, right: 0, forward: 0, back: 0 };
 
@@ -68,7 +68,6 @@ export function isTouchscreenDevice() {
     // Win8
     supportsTouch = true;
   else if ("ontouchstart" in document.documentElement)
-    // Controversial way to check touch support
     supportsTouch = true;
 
   return supportsTouch;
@@ -98,10 +97,11 @@ export function touchEvent(coordinates) {
   }
 }
 
+// 创建操控杆
 export function createJoystick(parent) {
-  const maxDiff = 62; //how far drag can go
+  // 控制杆最大距离
+  const maxDiff = 62;
   const stick = document.createElement("div");
-  //stick.classList.add("joystick");
   stick.setAttribute("id", "joystick");
 
   stick.addEventListener("mousedown", handleMouseDown);
@@ -135,11 +135,9 @@ export function createJoystick(parent) {
   function handleMouseMove(event) {
     if (dragStart === null) return;
 
-    //console.log("entered handleMouseMove");
     if (event.changedTouches) {
       event.clientX = event.changedTouches[0].clientX;
       event.clientY = event.changedTouches[0].clientY;
-      //touchEvent(currentPos);
     }
 
     const xDiff = event.clientX - dragStart.x;

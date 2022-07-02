@@ -1,8 +1,8 @@
 {
-  "name": "ryan_floyd_threejs",
+  "name": "3d-website",
   "version": "1.0.0",
-  "description": "webpack starter",
-  "main": "app.js",
+  "description": "",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack-dev-server --output-public-path=/build/  --mode development --progress --open --hot",
@@ -10,8 +10,9 @@
     "start": "node server.js",
     "heroku-postbuild": "webpack -p"
   },
-  "author": "Ryan Floyd",
-  "license": "MIT",
+  "keywords": [],
+  "author": "AirHua-byte",
+  "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.4.3",
     "@babel/polyfill": "^7.4.3",
